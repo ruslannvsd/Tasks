@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="35dp"
+    android:background="@color/black"
+    tools:context=".frags.MainFragment">
+
+    <LinearLayout
+        android:id="@+id/main_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:background="@color/dark_green"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/one_day"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="One day / Upcom"
+            android:layout_margin="5dp"
+            android:textSize="28sp"
+            android:gravity="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/three_days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Three days"
+            android:layout_margin="5dp"
+            android:textSize="28sp"
+            android:gravity="center"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/areas_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:scrollbars="vertical"
+        app:layout_constraintHeight_max="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/threads_rv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_buttons" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/threads_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:scrollbars="vertical"
+        app:layout_constraintHeight_max="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/tasks_rv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/areas_rv" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tasks_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/threads_rv" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:backgroundTint="#0C5000"
+        android:src="@drawable/plus_in_circle"
+        android:contentDescription="Add"
+        app:backgroundTint="@color/black"
+        app:borderWidth="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
