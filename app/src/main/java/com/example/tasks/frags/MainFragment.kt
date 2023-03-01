@@ -29,7 +29,6 @@ import com.example.tasks.popups.AddTask
 import com.example.tasks.utils.Cons
 import com.example.tasks.utils.SwipeHelper
 import kotlinx.coroutines.runBlocking
-import com.example.tasks.utils.OnSwipeAdapter as OnSwipeAdapter
 
 class MainFragment : Fragment() {
     private lateinit var bnd: FragmentMainBinding
@@ -73,19 +72,18 @@ class MainFragment : Fragment() {
         itemTouchHelp = ItemTouchHelper(SwipeHelper(adTask))
         itemTouchHelp.attachToRecyclerView(rvTask)
 
-        upcoming(Cons.ONE_DAY) // to show upcoming tasks when opening the app
-        green(oneDayTV)
+        upcoming(true) // to show upcoming tasks when opening the app
         oneDayTV.setOnClickListener {
-            upcoming(Cons.ONE_DAY)
+            upcoming(true)
             areasIntoRv(viewLifecycleOwner)
-            green(threeDaysTV)
             gray(oneDayTV)
+            green(threeDaysTV)
         }
         threeDaysTV.setOnClickListener {
-            upcoming(Cons.THREE_DAYS)
+            upcoming(false)
             areasIntoRv(viewLifecycleOwner)
-            green(oneDayTV)
             gray(threeDaysTV)
+            green(oneDayTV)
         }
 
         // initialization of Thread Adapter
@@ -102,8 +100,8 @@ class MainFragment : Fragment() {
         }
 
         val tasks = { thread: Long ->
-            gray(oneDayTV)
-            gray(threeDaysTV)
+            green(oneDayTV)
+            green(threeDaysTV)
             vmTask.tasks(thread).observe(viewLifecycleOwner) {
                 tasksIntoRv(it)
             }
@@ -113,27 +111,25 @@ class MainFragment : Fragment() {
             AddPopups.addThdPopup(requireContext(), arLong, vmThd, null)
         }
 
-        val renameThread = { area: Long, thread: Thd ->
-            AddPopups.addThdPopup(requireContext(), area, vmThd, thread)
+        val renameThread = { thread: Thd ->
+            AddPopups.addThdPopup(requireContext(), thread.area, vmThd, thread)
         }
 
-        val deleteThread = { thread: Thd ->
+        val deleteThread = { thread: Thd, pos: Int ->
             vmThd.delete(thread)
+            adThd.notifyItemRemoved(pos)
         }
 
-        adThd = ThdAd(requireContext(), addTask, tasks, deleteThread, renameThread)
+        adThd = ThdAd(requireContext(), addTask, tasks, renameThread, deleteThread)
 
         // initialization of Area Adapter
         // lambdas to pass to Area Adapter
 
-        val setThd = { area: Long ->
-            gray(oneDayTV)
-            gray(threeDaysTV)
+        val setAreaThreadsAndTasks = { area: Long ->
+            green(oneDayTV)
+            green(threeDaysTV)
             vmThd.threads(area).observe(viewLifecycleOwner) {
-                adThd.setThd(it, -1)
-                rvThd.adapter = adThd
-                rvThd.layoutManager =
-                    StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
+                threadsIntoRv(it)
             }
             vmTask.areaTasks(area).observe(viewLifecycleOwner) {
                 tasksIntoRv(it)
@@ -155,19 +151,19 @@ class MainFragment : Fragment() {
         }
 
         val renameArea = { area: Area ->
-            AddPopups.addAreaPopup(requireContext(), vmAr, area, setThd)
+            AddPopups.addAreaPopup(requireContext(), vmAr, area, setAreaThreadsAndTasks)
         }
 
         //val addArea = {
         //    AddPopups.addAreaPopup(requireContext(), vmAr, null, setThd)
         //}
 
-        adAr = AreaAd(requireContext(), setThd, addThread, deleteArea, renameArea)
+        adAr = AreaAd(requireContext(), setAreaThreadsAndTasks, addThread, deleteArea, renameArea)
 
         // button to add a new area
 
         bnd.addArea.setOnClickListener {
-            AddPopups.addAreaPopup(requireContext(), vmAr, null, setThd)
+            AddPopups.addAreaPopup(requireContext(), vmAr, null, setAreaThreadsAndTasks)
         }
 
         areasIntoRv(viewLifecycleOwner)
@@ -194,16 +190,14 @@ class MainFragment : Fragment() {
             rvAr.adapter = adAr
             rvAr.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
         }
-        adThd.setThd(emptyList(), -1)
+        threadsIntoRv(emptyList())
+    }
+
+    private fun threadsIntoRv(list: List<Thd>) {
+        adThd.setThd(list, -1)
         rvThd.adapter = adThd
         rvThd.layoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
     }
-
-    //private fun threadsIntoRv(owner: LifecycleOwner) {
-    //    adThd.setThd(emptyList(), -1)
-    //    rvThd.adapter = adThd
-    //    rvThd.layoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
-    //}
 
     private fun tasksIntoRv(tasks: List<Task>) {
         adTask.setTasks(tasks)
@@ -211,12 +205,21 @@ class MainFragment : Fragment() {
         rvTask.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun upcoming(endMillis: Long) {
-        val endTime = System.currentTimeMillis() + endMillis
-        vmTask.upcoming(endTime).observe(viewLifecycleOwner) {
-            adTask.setTasks(it)
-            rvTask.adapter = adTask
-            rvTask.layoutManager = LinearLayoutManager(requireContext())
+    private fun upcoming(oneDay: Boolean) {
+        if (oneDay) {
+            gray(oneDayTV)
+            green(threeDaysTV)
+            val endTime = System.currentTimeMillis() + Cons.ONE_DAY
+            vmTask.upcoming(endTime).observe(viewLifecycleOwner) {
+                tasksIntoRv(it)
+            }
+        } else {
+            green(oneDayTV)
+            gray(threeDaysTV)
+            val endTime = System.currentTimeMillis() + Cons.THREE_DAYS
+            vmTask.upcoming(endTime).observe(viewLifecycleOwner) {
+                tasksIntoRv(it)
+            }
         }
     }
 

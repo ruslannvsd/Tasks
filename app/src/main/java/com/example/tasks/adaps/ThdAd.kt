@@ -12,11 +12,11 @@ import com.example.tasks.popups.Menu
 
 class ThdAd(
     private val ctx: Context,
-    private val longs: (Long, Long) -> Unit,
+    private val longsForAddingTask: (Long, Long) -> Unit,
     private val tasks: (Long) -> Unit,
-    private val delete: (Thd) -> Unit,
-    private val rename: (Long, Thd) -> Unit
-) : RecyclerView.Adapter<ThdAd.ThdVH>() {
+    private val rename: (Thd) -> Unit,
+    private val delete: (Thd, Int) -> Unit
+    ) : RecyclerView.Adapter<ThdAd.ThdVH>() {
     private var threads = emptyList<Thd>()
     private var selected = -1
     class ThdVH(val bnd: RvThreadBinding) : RecyclerView.ViewHolder(bnd.root)
@@ -39,13 +39,13 @@ class ThdAd(
         else card.background.setTint(ctx.getColor(R.color.dark_blue_three))
         card.setOnLongClickListener {
             val addTask = {
-                longs(thd.thdL, thd.area)
-            }
-            val deleteThd = {
-                delete(thd)
+                longsForAddingTask(thd.thdL, thd.area)
             }
             val rename = {
-                rename(thd.area, thd)
+            rename(thd)
+        }
+            val deleteThd = {
+                delete(thd, h.absoluteAdapterPosition)
             }
             Menu.menu(ctx, card, addTask, rename, deleteThd, "Add Task")
 

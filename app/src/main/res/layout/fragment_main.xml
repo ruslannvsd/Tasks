@@ -14,8 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="2"
+        android:layout_marginHorizontal="7dp"
         android:background="@color/dark_green"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -46,9 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
         android:scrollbars="vertical"
-        app:layout_constraintHeight_max="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/threads_rv"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_buttons" />
 
@@ -58,21 +58,27 @@
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
         android:scrollbars="vertical"
-        app:layout_constraintHeight_max="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/tasks_rv"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/areas_rv" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tasks_rv"
+    <ScrollView
+        android:id="@+id/rv_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/threads_rv" />
+        app:layout_constraintTop_toBottomOf="@+id/threads_rv"
+        app:layout_constraintVertical_bias="0.0">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tasks_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp" />
+    </ScrollView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_area"
         android:layout_width="wrap_content"
